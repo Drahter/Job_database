@@ -48,7 +48,9 @@ class DBCreator(AbstractDB):
                     salary INTEGER,
                     employer_id INTEGER,
                     vacancy_url VARCHAR(255)
-                )
+                );
+                ALTER TABLE vacancies 
+                ADD FOREIGN KEY (employer_id) REFERENCES employers(employer_id)
             """)
 
         conn.commit()
@@ -128,8 +130,7 @@ class DBManager:
         self.cur.execute("""
         SELECT vacancy_name, salary
         FROM vacancies
-        GROUP BY vacancy_name, salary
-        having salary > (SELECT AVG(salary) FROM vacancies)
+        WHERE salary > (SELECT AVG(salary) from vacancies)
         ORDER BY salary DESC
         """)
         return self.cur.fetchall()
